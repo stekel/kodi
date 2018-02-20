@@ -15,7 +15,7 @@ $ composer require stekel/kodi
 ### Laravel
 
 ``` php
-use Facades\stekel\Kodi\Kodi;
+use Kodi;
 
 Kodi::player()->playPause(); // Play/Pause the currently playing media
 ```

@@ -2,6 +2,8 @@
 
 namespace stekel\Kodi;
 
+use Illuminate\Support\Facades\Facade;
+
 class KodiFacade extends Facade
 {
     /**
