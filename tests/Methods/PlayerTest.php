@@ -2,6 +2,8 @@
 
 namespace stekel\Kodi\Tests;
 
+use stekel\Kodi\Models\Episode;
+use stekel\Kodi\Models\Song;
 use stekel\Kodi\Tests\TestCase;
 
 class PlayerTest extends TestCase {
@@ -48,7 +50,7 @@ class PlayerTest extends TestCase {
     }
     
     /** @test **/
-    public function can_get_the_currently_playing_episode_item() {
+    public function can_get_the_currently_playing_tv_episode() {
     
         $kodi = $this->fakeKodi->createResponse([
             (object) [
@@ -71,9 +73,38 @@ class PlayerTest extends TestCase {
         ])->bind();
     
         $episode = $kodi->player()->getItem();
-    
+        
+        $this->assertEquals(Episode::class, get_class($episode));
         $this->assertEquals('Episode Title', $episode->title);
         $this->assertEquals(2, $episode->season);
         $this->assertEquals('Show Title', $episode->showtitle);
+    }
+    
+    /** @test **/
+    public function can_get_the_currently_playing_song() {
+    
+        $kodi = $this->fakeKodi->createResponse([
+            (object) [
+                'playerid' => 1,
+                'type' => 'audio'
+            ]
+        ])->createResponse([
+            (object) [
+                'item' => [
+                    'title' => 'Song Name',
+                    'id' => 321,
+                    'album' => 'The Album',
+                    'artist' => 'The Artist',
+                    'duration' => '01:24',
+                ]
+            ]
+        ])->bind();
+    
+        $song = $kodi->player()->getItem();
+        
+        $this->assertEquals(Song::class, get_class($song));
+        $this->assertEquals('Song Name', $song->title);
+        $this->assertEquals('The Album', $song->album);
+        $this->assertEquals('The Artist', $song->artist);
     }
 }

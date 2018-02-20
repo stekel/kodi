@@ -3,6 +3,8 @@
 namespace stekel\Kodi\Methods;
 
 use stekel\Kodi\KodiAdapter;
+use stekel\Kodi\Models\Episode;
+use stekel\Kodi\Models\TvShow;
 
 class VideoLibrary {
     
@@ -42,7 +44,10 @@ class VideoLibrary {
             return collect([]);
         }
         
-        return collect($response->tvshows);
+        return collect($response->tvshows)->transform(function($tvshow) {
+            
+            return new TvShow($tvshow);
+        });
     }
     
     /**
@@ -66,25 +71,10 @@ class VideoLibrary {
             return collect([]);
         }
         
-        return collect($response->episodes);
-    }
-    
-    /**
-     * Get latest episodes from a given show
-     *
-     * @param  string     $showName
-     * @param  integer    $limit
-     * @return Collection
-     */
-    public function latestEpisodes($showName='', $limit=1) {
-        
-        $response = $this->adapter->call($this->method.'.GetRecentlyAddedEpisodes', [
-            'limits' => [
-                'end' => $limit
-            ]
-        ]);
-        
-        return collect($response->episodes);
+        return collect($response->episodes)->transform(function($episode) {
+            
+            return new Episode($episode);
+        });
     }
     
     /**
@@ -101,7 +91,10 @@ class VideoLibrary {
             ]
         ]);
         
-        return collect($response->episodes);
+        return collect($response->episodes)->transform(function($episode) {
+            
+            return new Episode($episode);
+        });
     }
     
     /**
@@ -115,6 +108,6 @@ class VideoLibrary {
             'showdialogs' => false
         ]);
         
-        return ($response == 'OK') ? true : false;
+        return ($response == "OK") ? true : false;
     }
 }

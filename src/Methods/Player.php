@@ -5,6 +5,7 @@ namespace stekel\Kodi\Methods;
 use stekel\Kodi\KodiAdapter;
 use stekel\Kodi\Models\Player as PlayerModel;
 use stekel\Kodi\Models\Episode;
+use stekel\Kodi\Models\Song;
 
 class Player {
     
