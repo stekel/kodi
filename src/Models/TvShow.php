@@ -5,11 +5,18 @@ namespace stekel\Kodi\Models;
 class TvShow extends Model {
     
     /**
-     * Attributes
+     * Type
+     *
+     * @var string
+     */
+    protected $type = 'tvshow';
+    
+    /**
+     * Attribute aliases
      *
      * @var array
      */
-    protected $attributes = [
+    protected $attributeAliases = [
         'id' => 'tvshowid',
     ];
 }

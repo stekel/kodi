@@ -7,18 +7,25 @@ use stdClass;
 class Model {
     
     /**
-     * Parameters
+     * Type
      *
-     * @var stdClass
+     * @var string
      */
-    protected $parameters;
+    protected $type = '';
     
     /**
-     * Attributes
+     * Parameters
      *
      * @var array
      */
-    protected $attributes = [];
+    protected $parameters = [];
+    
+    /**
+     * Attribute aliases
+     *
+     * @var array
+     */
+    protected $attributeAliases = [];
     
     /**
      * Construct
@@ -27,7 +34,7 @@ class Model {
      */
     public function __construct(stdClass $parameters) {
         
-        $this->parameters = $parameters;
+        $this->parameters = array_merge($this->parameters, (array) $parameters);
     }
     
     /**
@@ -38,13 +45,27 @@ class Model {
      */
     public function __get($param) {
         
-        if (isset($this->attributes[$param])) {
+        if ($param == 'type' && $this->type != '') {
             
-            $parameter = $this->attributes[$param];
-            
-            return $this->parameters->$parameter;
+            return $this->type;
         }
         
-        return $this->parameters->$param ?? null;
+        if ($this->hasAlias($param)) {
+            
+            return $this->parameters[$this->attributeAliases[$param]];
+        }
+        
+        return $this->parameters[$param] ?? null;
+    }
+    
+    /**
+     * Attribute has an alias?
+     *
+     * @param  string  $param
+     * @return boolean
+     */
+    private function hasAlias($param) {
+        
+        return isset($this->attributeAliases[$param]);
     }
 }
