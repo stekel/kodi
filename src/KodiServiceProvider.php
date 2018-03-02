@@ -42,7 +42,7 @@ class KodiServiceProvider extends ServiceProvider
         $this->app->bind('kodi.client', function($app) {
             
             return new GuzzleClient([
-                'base_uri' => 'http://'.config('kodi.ip').':'.config('kodi.port').'/',
+                'base_uri' => 'http://'.config('kodi.host').':'.config('kodi.port').'/',
                 'timeout'  => 2.0,
             ]);
         });
