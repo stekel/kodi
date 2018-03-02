@@ -51,6 +51,33 @@ class VideoLibrary {
     }
     
     /**
+     * Get tv show details
+     *
+     * @param  TvShow $tvShow
+     * @return TvShow
+     */
+    public function getTVShowDetails(TvShow $tvShow) {
+        
+        $response = $this->adapter->call($this->method.'.GetTVShowDetails', [
+            'tvshowid' => $tvShow->id,
+            'properties' => [
+                "dateadded",
+                "episode",
+                "file",
+                "lastplayed",
+                "playcount",
+                "premiered",
+                "season",
+                "title",
+                "watchedepisodes",
+                "year",
+            ]
+        ]);
+        
+        return new TvShow($response->tvshowdetails);
+    }
+    
+    /**
      * Get all episodes from a tv show id
      *
      * @param  integer    $tvShowId
