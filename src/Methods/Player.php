@@ -59,6 +59,23 @@ class Player {
     }
     
     /**
+     * Open
+     *
+     * @param  mixed   $object
+     * @return boolean
+     */
+    public function open($object) {
+    
+        $this->adapter->call($this->method.'.Open', [
+            'item' => [
+                'channelid' => $object->id,
+            ],
+        ]);
+        
+        return true;
+    }
+    
+    /**
      * Stop
      *
      * @return boolean

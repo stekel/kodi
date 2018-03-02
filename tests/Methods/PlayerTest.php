@@ -26,6 +26,22 @@ class PlayerTest extends TestCase {
     }
     
     /** @test **/
+    public function can_play_the_given_episode() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            (object) [
+                'return' => 'string',
+            ]
+        ])->bind();
+        
+        $result = $kodi->player()->open(new Episode((object) [
+            'id' => 999,
+        ]));
+        
+        $this->assertTrue($result);
+    }
+    
+    /** @test **/
     public function can_play_or_pause_the_current_active_player() {
     
         $kodi = $this->fakeKodi->createResponse([

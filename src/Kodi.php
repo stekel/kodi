@@ -2,9 +2,11 @@
 
 namespace stekel\Kodi;
 
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Support\Collection;
 use stekel\Exceptions\KodiFunctionNotFound;
 use stekel\Kodi\KodiAdapter;
+use stekel\Kodi\Methods\Addons;
 use stekel\Kodi\Methods\Gui;
 use stekel\Kodi\Methods\Player;
 use stekel\Kodi\Methods\VideoLibrary;
@@ -46,6 +48,12 @@ class Kodi {
             )
         );
     }
+    
+    public function addons() {
+    
+        return new Addons($this->adapter);
+    }
+    
     /**
      * Player functions
      *
