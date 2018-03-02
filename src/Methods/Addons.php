@@ -56,12 +56,14 @@ class Addons {
      * @return boolean
      */
     public function playRandom($model) {
-    
-        return $this->adapter->call($this->method.'.ExecuteAddon', [
+        
+        $this->adapter->call($this->method.'.ExecuteAddon', [
             'addonid' => 'script.playrandomvideos',
             'params' => [
-                'videodb://tvshows/titles/'.$model->title,
+                'videodb://'.str_plural($model->type).'/titles/'.$model->id,
             ]
         ]);
+        
+        return true;
     }
 }
