@@ -3,11 +3,14 @@
 namespace stekel\Kodi\Tests\Methods;
 
 use stekel\Kodi\Kodi;
-use stekel\Kodi\Tests\TestCase;
 use stekel\Kodi\Models\Addon;
 use stekel\Kodi\Models\TvShow;
+use stekel\Kodi\Tests\Helpers\Request;
+use stekel\Kodi\Tests\TestCase;
 
 class AddonsTest extends TestCase {
+    
+    use Request;
     
     /** @test **/
     public function can_get_addons() {
@@ -26,6 +29,12 @@ class AddonsTest extends TestCase {
         ])->bind();
         
         $addons = $kodi->addons()->getAddons();
+                
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Addons.GetAddons',
+            'params' => []
+        ], $this->fakeKodi->getHistoryRequest(0));
         
         $this->assertCount(3, $addons);
         $this->assertEquals(Addon::class, get_class($addons->first()));
@@ -36,10 +45,21 @@ class AddonsTest extends TestCase {
     
         $kodi = $this->fakeKodi->createResponse("OK")->bind();
         
-        $this->assertEquals("OK", $kodi->addons()->playRandom(new TvShow((object) [
+        $this->assertTrue($kodi->addons()->playRandom(new TvShow((object) [
+            'tvshowid' => 999,
             'title' => 'Game of Thrones',
-            'file' => 'smb://server/tvshows/Game of Thrones/'
         ])));
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Addons.ExecuteAddon',
+            'params' => [
+                'addonid' => 'script.playrandomvideos',
+                'params' => [
+                    'videodb://tvshows/titles/999',
+                ]
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
     }
     
     /**
