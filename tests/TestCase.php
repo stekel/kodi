@@ -3,7 +3,7 @@
 namespace stekel\Kodi\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
-use stekel\Kodi\Tests\FakeKodi;
+use stekel\Kodi\Tests\Helpers\FakeKodi;
 
 class TestCase extends BaseTestCase {
     

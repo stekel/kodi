@@ -10,6 +10,7 @@ use stekel\Kodi\Methods\Addons;
 use stekel\Kodi\Methods\Gui;
 use stekel\Kodi\Methods\Player;
 use stekel\Kodi\Methods\VideoLibrary;
+use stekel\Kodi\Tests\Helpers\FakeKodi;
 
 class Kodi {
     
@@ -47,6 +48,16 @@ class Kodi {
                 ])
             )
         );
+    }
+    
+    /**
+     * Return an instance of FakeKodi
+     *
+     * @return FakeKodi
+     */
+    public static function fake() {
+    
+        return new FakeKodi();
     }
     
     /**
