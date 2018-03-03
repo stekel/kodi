@@ -45,6 +45,23 @@ class Player {
     }
     
     /**
+     * Open
+     *
+     * @param  mixed   $model
+     * @return boolean
+     */
+    public function open($model) {
+    
+        $this->adapter->call($this->method.'.Open', [
+            'item' => [
+                'channelid' => $model->id,
+            ],
+        ]);
+        
+        return true;
+    }
+    
+    /**
      * Play/Pause
      *
      * @return boolean
@@ -53,23 +70,6 @@ class Player {
     
         $this->adapter->call($this->method.'.PlayPause', [
             'playerid' => 1
-        ]);
-        
-        return true;
-    }
-    
-    /**
-     * Open
-     *
-     * @param  mixed   $object
-     * @return boolean
-     */
-    public function open($object) {
-    
-        $this->adapter->call($this->method.'.Open', [
-            'item' => [
-                'channelid' => $object->id,
-            ],
         ]);
         
         return true;
