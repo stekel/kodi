@@ -39,7 +39,7 @@ class VideoLibrary {
         
         $response = $this->adapter->call($this->method.'.GetTVShows', []);
         
-        if (!isset($response->tvshows)) {
+        if (!isset($response->tvshows) || empty($response->tvshows)) {
             
             return collect([]);
         }
@@ -63,10 +63,8 @@ class VideoLibrary {
             'properties' => [
                 "dateadded",
                 "episode",
-                "file",
                 "lastplayed",
                 "playcount",
-                "premiered",
                 "season",
                 "title",
                 "watchedepisodes",
@@ -93,7 +91,7 @@ class VideoLibrary {
             ],
         ]);
         
-        if (!isset($response->episodes)) {
+        if (!isset($response->episodes) || empty($response->episodes)) {
             
             return collect([]);
         }

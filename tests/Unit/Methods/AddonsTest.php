@@ -13,7 +13,7 @@ class AddonsTest extends TestCase {
     use Request;
     
     /** @test **/
-    public function can_get_addons() {
+    public function can_get_addons_with_a_collection() {
         
         $kodi = $this->fakeKodi->createResponse([
             'addons' => [
@@ -38,6 +38,29 @@ class AddonsTest extends TestCase {
         
         $this->assertCount(3, $addons);
         $this->assertEquals(Addon::class, get_class($addons->first()));
+    }
+    
+    /** @test **/
+    public function can_get_an_empty_collection_when_no_addons_exist() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'addons' => [],
+            'limits' => (object) [
+                'end' => 0,
+                'start' => 0,
+                'total' => 0
+            ]
+        ])->bind();
+        
+        $addons = $kodi->addons()->getAddons();
+                
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Addons.GetAddons',
+            'params' => []
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertCount(0, $addons);
     }
     
     /** @test **/

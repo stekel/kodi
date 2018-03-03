@@ -38,7 +38,7 @@ class Addons {
     
         $response = $this->adapter->call($this->method.'.GetAddons', []);
         
-        if (!isset($response->addons)) {
+        if (!isset($response->addons) || empty($response->addons)) {
             
             return collect([]);
         }

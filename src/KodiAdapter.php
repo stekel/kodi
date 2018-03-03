@@ -48,11 +48,6 @@ class KodiAdapter {
         
         $contents = json_decode($response->getBody()->getContents());
         
-        if (property_exists($contents, 'result')) {
-            
-            return $contents->result;
-        }
-        
-        return $contents;
+        return (property_exists($contents, 'result')) ? $contents->result : $contents;
     }
 }

@@ -37,7 +37,7 @@ class Gui {
      */
     public function showNotification($title, $message) {
     
-        $this->adapter->call($this->method.'.ShowNotification', [
+        return $this->adapter->call($this->method.'.ShowNotification', [
             'title' => $title,
             'message' => $message,
         ]);

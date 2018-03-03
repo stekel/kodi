@@ -15,7 +15,7 @@ class VideoLibraryTest extends TestCase {
     }
     
     /** @test **/
-    public function can_get_all_tvshows() {
+    public function can_get_all_tvshows_and_return_a_collection() {
         
         $kodi = $this->fakeKodi->createResponse([
             'tvshows' => [
@@ -37,7 +37,24 @@ class VideoLibraryTest extends TestCase {
     }
     
     /** @test **/
-    public function can_get_all_tvshow_episodes() {
+    public function can_get_an_empty_collection_when_no_tvshows_exist() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'tvshows' => [],
+            'limits' => (object) [
+                'end' => 0,
+                'start' => 0,
+                'total' => 0
+            ]
+        ])->bind();
+        
+        $tvshows = $kodi->videoLibrary()->getTvShows();
+        
+        $this->assertCount(0, $tvshows);
+    }
+    
+    /** @test **/
+    public function can_get_all_tvshow_episodes_and_return_a_collection() {
         
         $kodi = $this->fakeKodi->createResponse([
             'episodes' => [
@@ -56,6 +73,23 @@ class VideoLibraryTest extends TestCase {
         
         $this->assertCount(3, $episodes);
         $this->assertEquals(Episode::class, get_class($episodes->first()));
+    }
+    
+    /** @test **/
+    public function can_get_an_empty_collection_when_no_episodes_exist() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'episodes' => [],
+            'limits' => (object) [
+                'end' => 0,
+                'start' => 0,
+                'total' => 0
+            ]
+        ])->bind();
+        
+        $episodes = $kodi->videoLibrary()->getEpisodes(1);
+        
+        $this->assertCount(0, $episodes);
     }
     
     /** @test **/
@@ -78,6 +112,37 @@ class VideoLibraryTest extends TestCase {
         
         $this->assertCount(3, $episodes);
         $this->assertEquals(Episode::class, get_class($episodes->first()));
+    }
+    
+    /** @test **/
+    public function can_get_tvshow_details() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'tvshowdetails' => [
+                'dateadded' => 'dateadded',
+                'episode' => 'episode',
+                'lastplayed' => 'lastplayed',
+                'playcount' => 'playcount',
+                'season' => 'season',
+                'title' => 'title',
+                'watchedepisodes' => 'watchedepisodes',
+                'year' => 'year',
+            ]
+        ])->bind();
+        
+        $tvshow = $kodi->videoLibrary()->getTVShowDetails(new TvShow((object) [
+            'tvshowid' => 999,
+        ]));
+        
+        $this->assertEquals(TvShow::class, get_class($tvshow));
+        $this->assertEquals('dateadded', $tvshow->dateadded);
+        $this->assertEquals('episode', $tvshow->episode);
+        $this->assertEquals('lastplayed', $tvshow->lastplayed);
+        $this->assertEquals('playcount', $tvshow->playcount);
+        $this->assertEquals('season', $tvshow->season);
+        $this->assertEquals('title', $tvshow->title);
+        $this->assertEquals('watchedepisodes', $tvshow->watchedepisodes);
+        $this->assertEquals('year', $tvshow->year);
     }
     
     /**

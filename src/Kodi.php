@@ -49,6 +49,11 @@ class Kodi {
         );
     }
     
+    /**
+     * Add-on functions
+     *
+     * @return Addons
+     */
     public function addons() {
     
         return new Addons($this->adapter);
