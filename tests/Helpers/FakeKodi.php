@@ -1,6 +1,6 @@
 <?php
 
-namespace stekel\Kodi\Tests;
+namespace stekel\Kodi\Tests\Helpers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
