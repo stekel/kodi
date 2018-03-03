@@ -54,7 +54,7 @@ class Player {
     
         $this->adapter->call($this->method.'.Open', [
             'item' => [
-                'channelid' => $model->id,
+                $model->getParameter('id') => $model->id,
             ],
         ]);
         
