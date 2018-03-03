@@ -1,18 +1,15 @@
 <?php
 
+namespace stekel\Kodi\Tests\Unit\Methods;
+
 use stekel\Kodi\Models\Episode;
 use stekel\Kodi\Models\TvShow;
 use stekel\Kodi\Tests\TestCase;
+use stekel\Kodi\Tests\Helpers\Request;
 
 class VideoLibraryTest extends TestCase {
     
-    /** @test **/
-    public function can_clean_video_library() {
-        
-        $kodi = $this->fakeKodi->createResponse('OK')->bind();
-        
-        $this->assertTrue($kodi->videoLibrary()->clean());
-    }
+    use Request;
     
     /** @test **/
     public function can_get_all_tvshows_and_return_a_collection() {
@@ -32,6 +29,12 @@ class VideoLibraryTest extends TestCase {
         
         $tvshows = $kodi->videoLibrary()->getTvShows();
         
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.GetTVShows',
+            'params' => []
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
         $this->assertCount(3, $tvshows);
         $this->assertEquals(TvShow::class, get_class($tvshows->first()));
     }
@@ -50,68 +53,13 @@ class VideoLibraryTest extends TestCase {
         
         $tvshows = $kodi->videoLibrary()->getTvShows();
         
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.GetTVShows',
+            'params' => []
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
         $this->assertCount(0, $tvshows);
-    }
-    
-    /** @test **/
-    public function can_get_all_tvshow_episodes_and_return_a_collection() {
-        
-        $kodi = $this->fakeKodi->createResponse([
-            'episodes' => [
-                $this->fakeEpisode(),
-                $this->fakeEpisode(),
-                $this->fakeEpisode()
-            ],
-            'limits' => (object) [
-                'end' => 3,
-                'start' => 0,
-                'total' => 3
-            ]
-        ])->bind();
-        
-        $episodes = $kodi->videoLibrary()->getEpisodes(1);
-        
-        $this->assertCount(3, $episodes);
-        $this->assertEquals(Episode::class, get_class($episodes->first()));
-    }
-    
-    /** @test **/
-    public function can_get_an_empty_collection_when_no_episodes_exist() {
-        
-        $kodi = $this->fakeKodi->createResponse([
-            'episodes' => [],
-            'limits' => (object) [
-                'end' => 0,
-                'start' => 0,
-                'total' => 0
-            ]
-        ])->bind();
-        
-        $episodes = $kodi->videoLibrary()->getEpisodes(1);
-        
-        $this->assertCount(0, $episodes);
-    }
-    
-    /** @test **/
-    public function can_get_recently_added_episodes() {
-        
-        $kodi = $this->fakeKodi->createResponse([
-            'episodes' => [
-                $this->fakeEpisode(),
-                $this->fakeEpisode(),
-                $this->fakeEpisode()
-            ],
-            'limits' => (object) [
-                'end' => 3,
-                'start' => 0,
-                'total' => 3
-            ]
-        ])->bind();
-        
-        $episodes = $kodi->videoLibrary()->recentlyAddedEpisodes(3);
-        
-        $this->assertCount(3, $episodes);
-        $this->assertEquals(Episode::class, get_class($episodes->first()));
     }
     
     /** @test **/
@@ -134,6 +82,24 @@ class VideoLibraryTest extends TestCase {
             'tvshowid' => 999,
         ]));
         
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.GetTVShowDetails',
+            'params' => [
+                'tvshowid' => 999,
+                'properties' => [
+                    "dateadded",
+                    "episode",
+                    "lastplayed",
+                    "playcount",
+                    "season",
+                    "title",
+                    "watchedepisodes",
+                    "year",
+                ]
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
         $this->assertEquals(TvShow::class, get_class($tvshow));
         $this->assertEquals('dateadded', $tvshow->dateadded);
         $this->assertEquals('episode', $tvshow->episode);
@@ -143,6 +109,117 @@ class VideoLibraryTest extends TestCase {
         $this->assertEquals('title', $tvshow->title);
         $this->assertEquals('watchedepisodes', $tvshow->watchedepisodes);
         $this->assertEquals('year', $tvshow->year);
+    }
+    
+    /** @test **/
+    public function can_get_all_tvshow_episodes_and_return_a_collection() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'episodes' => [
+                $this->fakeEpisode(),
+                $this->fakeEpisode(),
+                $this->fakeEpisode()
+            ],
+            'limits' => (object) [
+                'end' => 3,
+                'start' => 0,
+                'total' => 3
+            ]
+        ])->bind();
+        
+        $episodes = $kodi->videoLibrary()->getEpisodes(1);
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.GetEpisodes',
+            'params' => [
+                'tvshowid' => 1,
+                'properties' => [
+                    'title',
+                    'lastplayed'
+                ]
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertCount(3, $episodes);
+        $this->assertEquals(Episode::class, get_class($episodes->first()));
+    }
+    
+    /** @test **/
+    public function can_get_an_empty_collection_when_no_episodes_exist() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'episodes' => [],
+            'limits' => (object) [
+                'end' => 0,
+                'start' => 0,
+                'total' => 0
+            ]
+        ])->bind();
+        
+        $episodes = $kodi->videoLibrary()->getEpisodes(1);
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.GetEpisodes',
+            'params' => [
+                'tvshowid' => 1,
+                'properties' => [
+                    'title',
+                    'lastplayed'
+                ]
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertCount(0, $episodes);
+    }
+    
+    /** @test **/
+    public function can_get_recently_added_episodes() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'episodes' => [
+                $this->fakeEpisode(),
+                $this->fakeEpisode(),
+                $this->fakeEpisode()
+            ],
+            'limits' => (object) [
+                'end' => 3,
+                'start' => 0,
+                'total' => 3
+            ]
+        ])->bind();
+        
+        $episodes = $kodi->videoLibrary()->recentlyAddedEpisodes(3);
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.GetRecentlyAddedEpisodes',
+            'params' => [
+                'limits' => [
+                    'end' => 3,
+                ],
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertCount(3, $episodes);
+        $this->assertEquals(Episode::class, get_class($episodes->first()));
+    }
+    
+    /** @test **/
+    public function can_clean_video_library() {
+        
+        $kodi = $this->fakeKodi->createResponse('OK')->bind();
+        
+        $this->assertTrue($kodi->videoLibrary()->clean());
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.Clean',
+            'params' => [
+                'showdialogs' => false
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
     }
     
     /**

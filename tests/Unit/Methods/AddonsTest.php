@@ -1,6 +1,6 @@
 <?php
 
-namespace stekel\Kodi\Tests\Methods;
+namespace stekel\Kodi\Tests\Unit\Methods;
 
 use stekel\Kodi\Kodi;
 use stekel\Kodi\Models\Addon;

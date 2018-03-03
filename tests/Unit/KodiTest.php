@@ -1,6 +1,6 @@
 <?php
 
-namespace stekel\Kodi\Tests;
+namespace stekel\Kodi\Tests\Unit;
 
 use stekel\Kodi\Kodi;
 use stekel\Kodi\Tests\TestCase;
