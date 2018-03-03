@@ -59,6 +59,17 @@ class Model {
     }
     
     /**
+     * Return the parameter from the alias
+     *
+     * @param  string $alias
+     * @return string
+     */
+    public function getParameter($alias='') {
+    
+        return ($this->hasAlias($alias)) ? $this->attributeAliases[$alias] : null;
+    }
+    
+    /**
      * Attribute has an alias?
      *
      * @param  string  $param

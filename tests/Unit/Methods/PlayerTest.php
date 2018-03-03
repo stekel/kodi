@@ -44,7 +44,7 @@ class PlayerTest extends TestCase {
         ])->bind();
         
         $result = $kodi->player()->open(new Episode((object) [
-            'id' => 999,
+            'episodeid' => 999,
         ]));
         
         $this->assertEquals(1, $this->fakeKodi->requestCount());
@@ -52,7 +52,7 @@ class PlayerTest extends TestCase {
             'method' => 'Player.Open',
             'params' => [
                 'item' => [
-                    'channelid' => 999,
+                    'episodeid' => 999,
                 ],
             ]
         ], $this->fakeKodi->getHistoryRequest(0));
