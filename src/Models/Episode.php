@@ -10,4 +10,13 @@ class Episode extends Model {
      * @var string
      */
     protected $type = 'episode';
+    
+    /**
+     * Attribute aliases
+     *
+     * @var array
+     */
+    protected $attributeAliases = [
+        'id' => 'episodeid',
+    ];
 }

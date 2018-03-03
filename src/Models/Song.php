@@ -10,4 +10,13 @@ class Song extends Model {
      * @var string
      */
     protected $type = 'song';
+    
+    /**
+     * Attribute aliases
+     *
+     * @var array
+     */
+    protected $attributeAliases = [
+        'id' => 'songid',
+    ];
 }
