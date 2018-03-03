@@ -1,12 +1,15 @@
 <?php
 
-namespace stekel\Kodi\Tests;
+namespace stekel\Kodi\Tests\Unit\Methods;
 
 use stekel\Kodi\Models\Episode;
 use stekel\Kodi\Models\Song;
 use stekel\Kodi\Tests\TestCase;
+use stekel\Kodi\Tests\Helpers\Request;
 
 class PlayerTest extends TestCase {
+    
+    use Request;
     
     /** @test **/
     public function can_get_active_players() {
@@ -20,9 +23,41 @@ class PlayerTest extends TestCase {
         
         $players = $kodi->player()->getActivePlayers();
         
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.GetActivePlayers',
+            'params' => []
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
         $this->assertCount(1, $players);
         $this->assertEquals(1, $players->first()->id);
         $this->assertEquals('video', $players->first()->type);
+    }
+    
+    /** @test **/
+    public function can_open_and_play_the_given_episode() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            (object) [
+                'return' => 'string',
+            ]
+        ])->bind();
+        
+        $result = $kodi->player()->open(new Episode((object) [
+            'id' => 999,
+        ]));
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.Open',
+            'params' => [
+                'item' => [
+                    'channelid' => 999,
+                ],
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertTrue($result);
     }
     
     /** @test **/
@@ -33,8 +68,16 @@ class PlayerTest extends TestCase {
                 'speed' => 1
             ]
         ])->bind();
-    
+        
         $this->assertTrue($kodi->player()->playPause());
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.PlayPause',
+            'params' => [
+                'playerid' => 1,
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
     }
     
     /** @test **/
@@ -47,6 +90,14 @@ class PlayerTest extends TestCase {
         ])->bind();
     
         $this->assertTrue($kodi->player()->stop());
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.Stop',
+            'params' => [
+                'playerid' => 1,
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
     }
     
     /** @test **/
@@ -73,6 +124,22 @@ class PlayerTest extends TestCase {
         ])->bind();
     
         $episode = $kodi->player()->getItem();
+        
+        $this->assertEquals(2, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.GetItem',
+            'params' => [
+                'playerid' => 1,
+                'properties' => [
+                    "title",
+                    "season",
+                    "episode",
+                    "duration",
+                    "showtitle",
+                    "tvshowid",
+                ]
+            ]
+        ], $this->fakeKodi->getHistoryRequest(1));
         
         $this->assertEquals(Episode::class, get_class($episode));
         $this->assertEquals('Episode Title', $episode->title);
@@ -101,6 +168,20 @@ class PlayerTest extends TestCase {
         ])->bind();
     
         $song = $kodi->player()->getItem();
+        
+        $this->assertEquals(2, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.GetItem',
+            'params' => [
+                'playerid' => 1,
+                'properties' => [
+                    "title",
+                    "album",
+                    "artist",
+                    "duration"
+                ]
+            ]
+        ], $this->fakeKodi->getHistoryRequest(1));
         
         $this->assertEquals(Song::class, get_class($song));
         $this->assertEquals('Song Name', $song->title);

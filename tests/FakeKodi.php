@@ -5,6 +5,7 @@ namespace stekel\Kodi\Tests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use stekel\Kodi\Kodi;
 use stekel\Kodi\KodiAdapter;
@@ -17,6 +18,13 @@ class FakeKodi {
      * @var array
      */
     protected $responses = [];
+    
+    /**
+     * Request history
+     *
+     * @var array
+     */
+    public $history = [];
     
     /**
      * Create response
@@ -42,12 +50,36 @@ class FakeKodi {
      */
     public function bind() {
         
+        $stack = HandlerStack::create(new MockHandler($this->responses));
+        $stack->push(Middleware::history($this->history));
+        
         return new Kodi(
             new KodiAdapter(
                 new Client([
-                    'handler' => HandlerStack::create(new MockHandler($this->responses))
+                    'handler' => $stack
                 ])
             )
         );
+    }
+    
+    /**
+     * Count of requests in the history
+     *
+     * @return integer
+     */
+    public function requestCount() {
+    
+        return count($this->history);
+    }
+    
+    /**
+     * Get history request by key
+     *
+     * @param  integer $key
+     * @return Request
+     */
+    public function getHistoryRequest($key) {
+        
+        return $this->history[$key]['request'] ?? $this->history[$key]['request'];
     }
 }

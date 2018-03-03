@@ -2,14 +2,14 @@
 
 namespace stekel\Kodi\Models;
 
-class TvShow extends Model {
+class Addon extends Model {
     
     /**
      * Type
      *
      * @var string
      */
-    protected $type = 'tvshow';
+    protected $type = 'addon';
     
     /**
      * Attribute aliases
@@ -17,6 +17,6 @@ class TvShow extends Model {
      * @var array
      */
     protected $attributeAliases = [
-        'id' => 'tvshowid',
+        'id' => 'addonid',
     ];
 }

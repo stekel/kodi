@@ -5,11 +5,11 @@ namespace stekel\Kodi\Models;
 class Player extends Model {
     
     /**
-     * Attributes
+     * Attribute aliases
      *
      * @var array
      */
-    protected $attributes = [
+    protected $attributeAliases = [
         'id' => 'playerid',
     ];
 }

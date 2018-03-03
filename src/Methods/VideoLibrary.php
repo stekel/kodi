@@ -39,7 +39,7 @@ class VideoLibrary {
         
         $response = $this->adapter->call($this->method.'.GetTVShows', []);
         
-        if (!isset($response->tvshows)) {
+        if (!isset($response->tvshows) || empty($response->tvshows)) {
             
             return collect([]);
         }
@@ -48,6 +48,31 @@ class VideoLibrary {
             
             return new TvShow($tvshow);
         });
+    }
+    
+    /**
+     * Get tv show details
+     *
+     * @param  TvShow $tvShow
+     * @return TvShow
+     */
+    public function getTVShowDetails(TvShow $tvShow) {
+        
+        $response = $this->adapter->call($this->method.'.GetTVShowDetails', [
+            'tvshowid' => $tvShow->id,
+            'properties' => [
+                "dateadded",
+                "episode",
+                "lastplayed",
+                "playcount",
+                "season",
+                "title",
+                "watchedepisodes",
+                "year",
+            ]
+        ]);
+        
+        return new TvShow($response->tvshowdetails);
     }
     
     /**
@@ -66,7 +91,7 @@ class VideoLibrary {
             ],
         ]);
         
-        if (!isset($response->episodes)) {
+        if (!isset($response->episodes) || empty($response->episodes)) {
             
             return collect([]);
         }
