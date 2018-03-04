@@ -18,7 +18,8 @@
     },
     "autoload": {
         "psr-4": {
-            "stekel\\Kodi\\": "src"
+            "stekel\\Kodi\\": "src",
+            "stekel\\Kodi\\Tests\\Helpers\\": "tests/Helpers"
         }
     },
     "autoload-dev": {
