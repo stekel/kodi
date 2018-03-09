@@ -10,6 +10,7 @@ use stekel\Kodi\Methods\Addons;
 use stekel\Kodi\Methods\Gui;
 use stekel\Kodi\Methods\Player;
 use stekel\Kodi\Methods\VideoLibrary;
+use stekel\Kodi\Methods\System;
 use stekel\Kodi\Tests\Helpers\FakeKodi;
 
 class Kodi {
@@ -98,5 +99,15 @@ class Kodi {
     public function gui() {
     
         return new Gui($this->adapter);
+    }
+    
+    /**
+     * System functions
+     *
+     * @return System
+     */
+    public function system() {
+    
+        return new System($this->adapter);
     }
 }
