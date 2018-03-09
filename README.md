@@ -60,3 +60,8 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 | VideoLibrary.GetEpisodes | `$kodi->videoLibrary()->getEpisodes($tvShowId);` |
 | VideoLibrary.GetRecentlyAddedEpisodes | `$kodi->videoLibrary()->recentlyAddedEpisodes($limit=3);` |
 | VideoLibrary.Clean | `$kodi->videoLibrary()->clean();` |
+
+### System
+| Function | Execution |
+| -------- | --------- |
+| XBMC.GetInfoLabels | `$kodi->system()->getInfoLabels();` |
