@@ -20,5 +20,6 @@ class System extends Model {
         'buildDate' => 'System.BuildDate',
         'buildVersion' => 'System.BuildVersion',
         'friendlyName' => 'System.FriendlyName',
+        'ipAddress' => 'Network.IPAddress',
     ];
 }
