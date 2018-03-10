@@ -3,6 +3,7 @@
 namespace stekel\Kodi\Tests\Unit\Methods;
 
 use stekel\Kodi\Models\Episode;
+use stekel\Kodi\Models\Movie;
 use stekel\Kodi\Models\TvShow;
 use stekel\Kodi\Tests\TestCase;
 use stekel\Kodi\Tests\Helpers\Request;
@@ -207,6 +208,44 @@ class VideoLibraryTest extends TestCase {
     }
     
     /** @test **/
+    public function can_get_a_movie_by_the_title() {
+        
+        $movie = $this->fakeMovie('Cars');
+        
+        $kodi = $this->fakeKodi->createResponse([
+            'movies' => [
+                $movie
+            ],
+            'limits' => (object) [
+                'end' => 1,
+                'start' => 0,
+                'total' => 1
+            ]
+        ])->bind();
+        
+        $movies = $kodi->videoLibrary()->getMovies(['title' => $movie->title]);
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.GetMovies',
+            'params' => [
+                'filter' => [
+                    'field' => 'title',
+                    'operator' => 'is',
+                    'value' => $movie->title
+                ],
+                'properties' => [
+                    'title',
+                    'lastplayed',
+                ]
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertCount(1, $movies);
+        $this->assertEquals(Movie::class, get_class($movies->first()));
+    }
+    
+    /** @test **/
     public function can_clean_video_library() {
         
         $kodi = $this->fakeKodi->createResponse('OK')->bind();
@@ -245,6 +284,19 @@ class VideoLibraryTest extends TestCase {
         return (object) [
             'tvshowid' => rand(1, 100),
             'title' => 'Fake Tv Show '.rand(1,100),
+        ];
+    }
+    
+    /**
+     * Create a fake movie
+     *
+     * @return stdClass
+     */
+    private function fakeMovie($title='') {
+        
+        return (object) [
+            'movieid' => rand(1, 100),
+            'title' => ($title != '') ? $title : 'Fake Movie '.rand(1,100),
         ];
     }
 }

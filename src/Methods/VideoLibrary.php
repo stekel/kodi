@@ -4,6 +4,7 @@ namespace stekel\Kodi\Methods;
 
 use stekel\Kodi\KodiAdapter;
 use stekel\Kodi\Models\Episode;
+use stekel\Kodi\Models\Movie;
 use stekel\Kodi\Models\TvShow;
 
 class VideoLibrary {
@@ -122,6 +123,41 @@ class VideoLibrary {
         });
     }
     
+    /**
+     * Get Movies
+     *
+     * @param  array $filter
+     * @return Collection
+     */
+    public function getMovies($filter=[]) {
+        
+        if (isset($filter['title'])) {
+            
+            $filter = [
+                'field' => 'title',
+                'operator' => 'is',
+                'value' => $filter['title'],
+            ];
+        }
+        
+        $response = $this->adapter->call($this->method.'.GetMovies', [
+            'filter' => $filter,
+            'properties' => [
+                "title",
+                "lastplayed",
+            ],
+        ]);
+        
+        if (!isset($response->movies) || empty($response->movies)) {
+            
+            return collect([]);
+        }
+        
+        return collect($response->movies)->transform(function($movie) {
+            
+            return new Movie($movie);
+        });
+    }
     /**
      * Clean the video library
      *

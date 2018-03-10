@@ -55,11 +55,12 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 ### Video Library
 | Function | Execution |
 | -------- | --------- |
-| VideoLibrary.GetTVShows | `$kodi->videoLibrary()->getTvShows();` |
-| VideoLibrary.GetTVShowDetails | `$kodi->videoLibrary()->getTVShowDetails(TvShow $tvshow);` |
+| VideoLibrary.Clean | `$kodi->videoLibrary()->clean();` |
 | VideoLibrary.GetEpisodes | `$kodi->videoLibrary()->getEpisodes($tvShowId);` |
 | VideoLibrary.GetRecentlyAddedEpisodes | `$kodi->videoLibrary()->recentlyAddedEpisodes($limit=3);` |
-| VideoLibrary.Clean | `$kodi->videoLibrary()->clean();` |
+| VideoLibrary.GetTVShowDetails | `$kodi->videoLibrary()->getTVShowDetails(TvShow $tvshow);` |
+| VideoLibrary.GetTVShows | `$kodi->videoLibrary()->getTvShows();` |
+| VideoLibrary.GetMovies | `$kodi->videoLibrary()->getMovies(array $filter);` |
 
 ### System
 | Function | Execution |
