@@ -158,6 +158,7 @@ class VideoLibrary {
             return new Movie($movie);
         });
     }
+    
     /**
      * Clean the video library
      *

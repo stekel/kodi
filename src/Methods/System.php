@@ -41,6 +41,7 @@ class System {
                 'System.BuildVersion',
                 'System.BuildDate',
                 'System.FriendlyName',
+                'Network.IPAddress',
             ]
         ]);
         
