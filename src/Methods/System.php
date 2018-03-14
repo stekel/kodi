@@ -2,17 +2,19 @@
 
 namespace stekel\Kodi\Methods;
 
+use stekel\Kodi\Kodi;
 use stekel\Kodi\KodiAdapter;
 use stekel\Kodi\Models\System as SystemModel;
+use stekel\Kodi\Models\Volume;
 
 class System {
     
     /**
-     * Kodi adapter
+     * Kodi
      *
-     * @var KodiAdapter
+     * @var Kodi
      */
-    protected $adapter;
+    protected $kodi;
     
     /**
      * Method
@@ -24,9 +26,9 @@ class System {
     /**
      * Construct
      */
-    public function __construct(KodiAdapter $adapter) {
+    public function __construct(Kodi $kodi) {
         
-        $this->adapter = $adapter;
+        $this->kodi = $kodi;
     }
     
     /**
@@ -36,7 +38,7 @@ class System {
      */
     public function getInfoLabels() {
         
-        $response = $this->adapter->call($this->method.'.GetInfoLabels', [
+        $response = $this->kodi->adapter()->call($this->method.'.GetInfoLabels', [
             'labels' => [
                 'System.BuildVersion',
                 'System.BuildDate',
@@ -46,5 +48,34 @@ class System {
         ]);
         
         return new SystemModel($response);
+    }
+    
+    /**
+     * Get volume
+     *
+     * @return Volume
+     */
+    public function getVolume() {
+    
+        $result = $this->kodi->adapter()->call('Application.GetProperties', [
+            'properties' => [
+                'volume'
+            ]
+        ]);
+        
+        return new Volume($result, $this->kodi);
+    }
+    
+    /**
+     * Set volume
+     *
+     * @param  integer $volume
+     * @return integer
+     */
+    public function setVolume($volume) {
+    
+        return $this->kodi->adapter()->call('Application.SetVolume', [
+            'volume' => $volume
+        ]);
     }
 }

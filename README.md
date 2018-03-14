@@ -33,18 +33,18 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 ## Supported Functions
 
 ### Add-ons
-| Function | Execution |
+| JSON-RPC Function | Execution |
 | -------- | --------- |
 | Addons.GetAddons | `$kodi->addons()->getAddons();` |
 | Addons.ExecuteAddon : script.playrandomvideos | `$kodi->addons()->playRandom($model)`<br>$model can be a `TvShow` or `Song` |
 
 ### Gui
-| Function | Execution |
+| JSON-RPC Function | Execution |
 | -------- | --------- |
 | GUI.ShowNotification | `$kodi->gui()->showNotification($title, $message);` |
 
 ### Player
-| Function | Execution |
+| JSON-RPC Function | Execution |
 | -------- | --------- |
 | Player.GetActivePlayers | `$kodi->player()->getActivePlayers();` |
 | Player.Open | `$kodi->player()->open($model);`<br>$model can be an `Episode` or `Song` |
@@ -53,7 +53,7 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 | Player.GetItem | `$kodi->player()->getItem();`<br>Returns either an `Episode` or `Song` |
 
 ### Video Library
-| Function | Execution |
+| JSON-RPC Function | Execution |
 | -------- | --------- |
 | VideoLibrary.Clean | `$kodi->videoLibrary()->clean();` |
 | VideoLibrary.GetEpisodes | `$kodi->videoLibrary()->getEpisodes($tvShowId);` |
@@ -63,6 +63,8 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 | VideoLibrary.GetMovies | `$kodi->videoLibrary()->getMovies(array $filter);` |
 
 ### System
-| Function | Execution |
+| JSON-RPC Function | Execution |
 | -------- | --------- |
 | XBMC.GetInfoLabels | `$kodi->system()->getInfoLabels();` |
+| Application.GetProperties | `$kodi->system()->getVolume();` |
+| Application.SetVolume | `$kodi->system()->setVolume($volume);` |

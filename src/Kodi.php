@@ -7,10 +7,11 @@ use Illuminate\Support\Collection;
 use stekel\Exceptions\KodiFunctionNotFound;
 use stekel\Kodi\KodiAdapter;
 use stekel\Kodi\Methods\Addons;
+use stekel\Kodi\Methods\Application;
 use stekel\Kodi\Methods\Gui;
 use stekel\Kodi\Methods\Player;
-use stekel\Kodi\Methods\VideoLibrary;
 use stekel\Kodi\Methods\System;
+use stekel\Kodi\Methods\VideoLibrary;
 use stekel\Kodi\Tests\Helpers\FakeKodi;
 
 class Kodi {
@@ -49,6 +50,16 @@ class Kodi {
                 ])
             )
         );
+    }
+    
+    /**
+     * Return the adapter
+     *
+     * @return KodiAdapter
+     */
+    public function adapter() {
+    
+        return $this->adapter;
     }
     
     /**
@@ -108,6 +119,6 @@ class Kodi {
      */
     public function system() {
     
-        return new System($this->adapter);
+        return new System($this);
     }
 }
