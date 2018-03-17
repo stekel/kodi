@@ -12,4 +12,24 @@ class Player extends Model {
     protected $attributeAliases = [
         'id' => 'playerid',
     ];
+    
+    /**
+     * Next playlist item
+     *
+     * @return void
+     */
+    public function next() {
+    
+        $this->kodi->player()->goTo('next');
+    }
+    
+    /**
+     * Previous playlist item
+     *
+     * @return void
+     */
+    public function previous() {
+    
+        $this->kodi->player()->goTo('previous');
+    }
 }

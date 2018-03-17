@@ -3,9 +3,10 @@
 namespace stekel\Kodi\Tests\Unit\Methods;
 
 use stekel\Kodi\Models\Episode;
+use stekel\Kodi\Models\Player;
 use stekel\Kodi\Models\Song;
-use stekel\Kodi\Tests\TestCase;
 use stekel\Kodi\Tests\Helpers\Request;
+use stekel\Kodi\Tests\TestCase;
 
 class PlayerTest extends TestCase {
     
@@ -54,6 +55,31 @@ class PlayerTest extends TestCase {
                 'item' => [
                     'episodeid' => 999,
                 ],
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertTrue($result);
+    }
+    
+    /** @test **/
+    public function can_skip_to_the_next_playlist_item() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            (object) [
+                'return' => 'string',
+            ]
+        ])->bind();
+        
+        $result = $kodi->player()->goTo(new Player((object) [
+            'playerid' => 1
+        ]), 'next');
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.GoTo',
+            'params' => [
+                'playerid' => 1,
+                'to' => 'next',
             ]
         ], $this->fakeKodi->getHistoryRequest(0));
         

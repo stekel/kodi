@@ -3,8 +3,16 @@
 namespace stekel\Kodi\Models;
 
 use stdClass;
+use stekel\Kodi\Kodi;
 
 class Model {
+    
+    /**
+     * Kodi
+     *
+     * @var Kodi
+     */
+    protected $kodi;
     
     /**
      * Type
@@ -31,10 +39,13 @@ class Model {
      * Construct
      *
      * @param stdClass $parameters
+     * @param Kodi     $kodi
      */
-    public function __construct(stdClass $parameters) {
+    public function __construct(\stdClass $parameters, Kodi $kodi=null) {
         
         $this->parameters = array_merge($this->parameters, (array) $parameters);
+        
+        $this->kodi = $kodi;
     }
     
     /**

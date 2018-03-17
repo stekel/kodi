@@ -48,6 +48,7 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 | -------- | --------- |
 | Player.GetActivePlayers | `$kodi->player()->getActivePlayers();` |
 | Player.Open | `$kodi->player()->open($model);`<br>$model can be an `Episode` or `Song` |
+| Player.GoTo | `$kodi->player()->goto($player, 'next');`<br>`$kodi->player()->goto($player, 'previous');`<br>$player is a `Player` model |
 | Player.PlayPause | `$kodi->player()->playPause();` |
 | Player.Stop | `$kodi->player()->stop();` |
 | Player.GetItem | `$kodi->player()->getItem();`<br>Returns either an `Episode` or `Song` |

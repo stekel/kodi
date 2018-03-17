@@ -2,29 +2,7 @@
 
 namespace stekel\Kodi\Models;
 
-use stekel\Kodi\Kodi;
-
 class Volume extends Model {
-    
-    /**
-     * Kodi
-     *
-     * @var Kodi
-     */
-    protected $kodi;
-    
-    /**
-     * Construct
-     *
-     * @param stdClass $parameters
-     * @param Kodi     $kodi
-     */
-    public function __construct(\stdClass $parameters, Kodi $kodi) {
-        
-        parent::__construct($parameters);
-        
-        $this->kodi = $kodi;
-    }
     
     /**
      * Get current volume

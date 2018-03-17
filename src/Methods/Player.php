@@ -62,6 +62,28 @@ class Player {
     }
     
     /**
+     * Go to (previous/next)
+     *
+     * @param  PlayerModel  $player
+     * @param  string  $direction
+     * @return boolean
+     */
+    public function goTo(PlayerModel $player, $direction) {
+        
+        if (!in_array($direction, ['previous', 'next'])) {
+            
+            return false;
+        }
+        
+        $this->adapter->call($this->method.'.GoTo', [
+            'playerid' => $player->id,
+            'to' => $direction,
+        ]);
+        
+        return true;
+    }
+    
+    /**
      * Play/Pause
      *
      * @return boolean
