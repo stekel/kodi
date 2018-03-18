@@ -36,6 +36,29 @@ class PlayerTest extends TestCase {
     }
     
     /** @test **/
+    public function can_get_all_players() {
+        
+        $kodi = $this->fakeKodi->createResponse([
+            (object) [
+                'playerid' => 1,
+                'type' => 'video'
+            ]
+        ])->bind();
+        
+        $players = $kodi->player()->getPlayers();
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.GetPlayers',
+            'params' => []
+        ], $this->fakeKodi->getHistoryRequest(0));
+        
+        $this->assertCount(1, $players);
+        $this->assertEquals(1, $players->first()->id);
+        $this->assertEquals('video', $players->first()->type);
+    }
+    
+    /** @test **/
     public function can_open_and_play_the_given_episode() {
         
         $kodi = $this->fakeKodi->createResponse([

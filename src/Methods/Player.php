@@ -45,6 +45,19 @@ class Player {
     }
     
     /**
+     * Get players
+     *
+     * @return Collection
+     */
+    public function getPlayers() {
+    
+        return collect($this->adapter->call($this->method.'.GetPlayers', []))->transform(function($item) {
+            
+            return new PlayerModel($item);
+        });
+    }
+    
+    /**
      * Open
      *
      * @param  mixed   $model
