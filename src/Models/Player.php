@@ -14,6 +14,27 @@ class Player extends Model {
     ];
     
     /**
+     * Open the given media on this player
+     *
+     * @param  Model $media
+     * @return void
+     */
+    public function open(Model $media) {
+    
+        $this->kodi->player()->open($media);
+    }
+    
+    /**
+     * Play/Pause
+     *
+     * @return void
+     */
+    public function playPause() {
+    
+        $this->kodi->player()->playPause();
+    }
+    
+    /**
      * Next playlist item
      *
      * @return void

@@ -86,12 +86,13 @@ class Player {
     /**
      * Play/Pause
      *
+     * @param  PlayerModel $player
      * @return boolean
      */
-    public function playPause() {
+    public function playPause(PlayerModel $player=null) {
     
         $this->adapter->call($this->method.'.PlayPause', [
-            'playerid' => 1
+            'playerid' => is_null($player) ? 1 : $player->id,
         ]);
         
         return true;
@@ -100,12 +101,13 @@ class Player {
     /**
      * Stop
      *
+     * @param  PlayerModel $player
      * @return boolean
      */
-    public function stop() {
-    
+    public function stop(PlayerModel $player=null) {
+        
         $this->adapter->call($this->method.'.Stop', [
-            'playerid' => 1
+            'playerid' => is_null($player) ? 1 : $player->id,
         ]);
         
         return true;

@@ -34,28 +34,39 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 
 ### Add-ons
 | JSON-RPC Function | Execution |
-| -------- | --------- |
+| --------- | --------- |
 | Addons.GetAddons | `$kodi->addons()->getAddons();` |
 | Addons.ExecuteAddon : script.playrandomvideos | `$kodi->addons()->playRandom($model)`<br>$model can be a `TvShow` or `Song` |
 
 ### Gui
 | JSON-RPC Function | Execution |
-| -------- | --------- |
+| --------- | --------- |
 | GUI.ShowNotification | `$kodi->gui()->showNotification($title, $message);` |
 
 ### Player
 | JSON-RPC Function | Execution |
-| -------- | --------- |
-| Player.GetActivePlayers | `$kodi->player()->getActivePlayers();` |
+| --------- | --------- |
+| Player.GetActivePlayers | `$kodi->player()->getActivePlayers();`<br>Returns a collection of `Player` models |
 | Player.Open | `$kodi->player()->open($model);`<br>$model can be an `Episode` or `Song` |
 | Player.GoTo | `$kodi->player()->goto($player, 'next');`<br>`$kodi->player()->goto($player, 'previous');`<br>$player is a `Player` model |
 | Player.PlayPause | `$kodi->player()->playPause();` |
 | Player.Stop | `$kodi->player()->stop();` |
 | Player.GetItem | `$kodi->player()->getItem();`<br>Returns either an `Episode` or `Song` |
 
+#### Player Model
+
+For convenience, you can interact directly with the given `Player` model with the following commands.
+
+| Function | Description |
+| --------- | --------- |
+| `$player->play(Model $model);` | Play the given media model (Movie, TvShow, etc.) |
+| `$player->next();` | Play the next item in the current playlist |
+| `$player->previous();` | Play the previous item in the current playlist |
+
+
 ### Video Library
 | JSON-RPC Function | Execution |
-| -------- | --------- |
+| --------- | --------- |
 | VideoLibrary.Clean | `$kodi->videoLibrary()->clean();` |
 | VideoLibrary.GetEpisodes | `$kodi->videoLibrary()->getEpisodes($tvShowId);` |
 | VideoLibrary.GetRecentlyAddedEpisodes | `$kodi->videoLibrary()->recentlyAddedEpisodes($limit=3);` |
@@ -65,7 +76,7 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 
 ### System
 | JSON-RPC Function | Execution |
-| -------- | --------- |
+| --------- | --------- |
 | XBMC.GetInfoLabels | `$kodi->system()->getInfoLabels();` |
 | Application.GetProperties | `$kodi->system()->getVolume();` |
 | Application.SetVolume | `$kodi->system()->setVolume($volume);` |

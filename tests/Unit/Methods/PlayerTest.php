@@ -87,7 +87,7 @@ class PlayerTest extends TestCase {
     }
     
     /** @test **/
-    public function can_play_or_pause_the_current_active_player() {
+    public function can_play_or_pause_the_current_active_player_using_the_default_player() {
     
         $kodi = $this->fakeKodi->createResponse([
             (object) [
@@ -107,7 +107,31 @@ class PlayerTest extends TestCase {
     }
     
     /** @test **/
-    public function can_stop_the_current_active_player() {
+    public function can_play_or_pause_the_current_active_player_using_a_given_player() {
+    
+        $kodi = $this->fakeKodi->createResponse([
+            (object) [
+                'speed' => 1
+            ]
+        ])->bind();
+        
+        $player = new Player((object) [
+            'playerid' => 2
+        ]);
+        
+        $this->assertTrue($kodi->player()->playPause($player));
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.PlayPause',
+            'params' => [
+                'playerid' => 2,
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+    }
+    
+    /** @test **/
+    public function can_stop_the_current_active_player_with_the_default_player() {
     
         $kodi = $this->fakeKodi->createResponse([
             (object) [
@@ -122,6 +146,30 @@ class PlayerTest extends TestCase {
             'method' => 'Player.Stop',
             'params' => [
                 'playerid' => 1,
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+    }
+    
+    /** @test **/
+    public function can_stop_the_current_active_player_with_a_given_player() {
+    
+        $kodi = $this->fakeKodi->createResponse([
+            (object) [
+                'speed' => 1
+            ]
+        ])->bind();
+        
+        $player = new Player((object) [
+            'playerid' => 2
+        ]);
+        
+        $this->assertTrue($kodi->player()->stop($player));
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Player.Stop',
+            'params' => [
+                'playerid' => 2,
             ]
         ], $this->fakeKodi->getHistoryRequest(0));
     }
