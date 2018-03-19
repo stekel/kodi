@@ -40,7 +40,7 @@ class Player {
     
         return collect($this->kodi->adapter()->call($this->method.'.GetActivePlayers', []))->transform(function($item) {
             
-            return new PlayerModel((object) $item);
+            return new PlayerModel((object) $item, $this->kodi);
         });
     }
     
@@ -53,7 +53,7 @@ class Player {
     
         return collect($this->kodi->adapter()->call($this->method.'.GetPlayers', []))->transform(function($item) {
             
-            return new PlayerModel($item);
+            return new PlayerModel((object) $item, $this->kodi);
         });
     }
     
