@@ -48,10 +48,10 @@ $kodi->player()->playPause(); // Play/Pause the currently playing media
 | --------- | --------- |
 | Player.GetActivePlayers | `$kodi->player()->getActivePlayers();`<br>Returns a collection of `Player` models |
 | Player.Open | `$kodi->player()->open($model);`<br>$model can be an `Episode` or `Song` |
-| Player.GoTo | `$kodi->player()->goto($player, 'next');`<br>`$kodi->player()->goto($player, 'previous');`<br>$player is a `Player` model |
-| Player.PlayPause | `$kodi->player()->playPause();` |
-| Player.Stop | `$kodi->player()->stop();` |
-| Player.GetItem | `$kodi->player()->getItem();`<br>Returns either an `Episode` or `Song` |
+| Player.GoTo | `$kodi->player()->goto(Player $player, 'next');`<br>`$kodi->player()->goto(Player $player, 'previous');` |
+| Player.PlayPause | `$kodi->player()->playPause(Player $player);` |
+| Player.Stop | `$kodi->player()->stop(Player $player);` |
+| Player.GetItem | `$kodi->player()->getItem(Player $player);`<br>Returns either an `Episode` or `Song` |
 
 #### Player Model
 
@@ -59,7 +59,10 @@ For convenience, you can interact directly with the given `Player` model with th
 
 | Function | Description |
 | --------- | --------- |
-| `$player->play(Model $model);` | Play the given media model (Movie, TvShow, etc.) |
+| `$player->open(Model $model);` | Play the given media model (Movie, TvShow, etc.) |
+| `$player->playPause();` | Play or pause the given player |
+| `$player->stop();` | Stop the currently playing media |
+| `$player->nowPlaying();` | Return the model of the currently playing media |
 | `$player->next();` | Play the next item in the current playlist |
 | `$player->previous();` | Play the previous item in the current playlist |
 

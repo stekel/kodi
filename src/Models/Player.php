@@ -31,7 +31,27 @@ class Player extends Model {
      */
     public function playPause() {
     
-        $this->kodi->player()->playPause();
+        $this->kodi->player()->playPause($this);
+    }
+    
+    /**
+     * Stop
+     *
+     * @return void
+     */
+    public function stop() {
+    
+        $this->kodi->player()->stop($this);
+    }
+    
+    /**
+     * Return the currently playing item
+     *
+     * @return Model
+     */
+    public function nowPlaying() {
+    
+        return $this->kodi->player()->getItem($this);
     }
     
     /**

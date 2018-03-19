@@ -129,13 +129,14 @@ class Player {
     /**
      * Get the currently playing item
      *
+     * @param  PlayerModel $player
      * @return array
      */
-    public function getItem() {
+    public function getItem(PlayerModel $player=null) {
         
-        $activePlayer = $this->getActivePlayers()->first();
+        $player = is_null($player) ? $this->getActivePlayers()->first() : $player;
         
-        if ($activePlayer->type == 'audio') {
+        if ($player->type == 'audio') {
             
             $response = $this->adapter->call($this->method.'.GetItem', [
                 'playerid' => 1,
