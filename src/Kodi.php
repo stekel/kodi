@@ -89,7 +89,7 @@ class Kodi {
      */
     public function player() {
         
-        return new Player($this->adapter);
+        return new Player($this);
     }
     
     /**

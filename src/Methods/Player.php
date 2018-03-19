@@ -2,7 +2,7 @@
 
 namespace stekel\Kodi\Methods;
 
-use stekel\Kodi\KodiAdapter;
+use stekel\Kodi\Kodi;
 use stekel\Kodi\Models\Player as PlayerModel;
 use stekel\Kodi\Models\Episode;
 use stekel\Kodi\Models\Song;
@@ -10,11 +10,11 @@ use stekel\Kodi\Models\Song;
 class Player {
     
     /**
-     * Kodi adapter
+     * Kodi
      *
-     * @var KodiAdapter
+     * @var Kodi
      */
-    protected $adapter;
+    protected $kodi;
     
     /**
      * Method
@@ -26,9 +26,9 @@ class Player {
     /**
      * Construct
      */
-    public function __construct(KodiAdapter $adapter) {
+    public function __construct(Kodi $kodi) {
         
-        $this->adapter = $adapter;
+        $this->kodi = $kodi;
     }
     
     /**
@@ -38,9 +38,9 @@ class Player {
      */
     public function getActivePlayers() {
     
-        return collect($this->adapter->call($this->method.'.GetActivePlayers', []))->transform(function($item) {
+        return collect($this->kodi->adapter()->call($this->method.'.GetActivePlayers', []))->transform(function($item) {
             
-            return new PlayerModel($item);
+            return new PlayerModel((object) $item);
         });
     }
     
@@ -51,7 +51,7 @@ class Player {
      */
     public function getPlayers() {
     
-        return collect($this->adapter->call($this->method.'.GetPlayers', []))->transform(function($item) {
+        return collect($this->kodi->adapter()->call($this->method.'.GetPlayers', []))->transform(function($item) {
             
             return new PlayerModel($item);
         });
@@ -65,7 +65,7 @@ class Player {
      */
     public function open($model) {
     
-        $this->adapter->call($this->method.'.Open', [
+        $this->kodi->adapter()->call($this->method.'.Open', [
             'item' => [
                 $model->getParameter('id') => $model->id,
             ],
@@ -88,7 +88,7 @@ class Player {
             return false;
         }
         
-        $this->adapter->call($this->method.'.GoTo', [
+        $this->kodi->adapter()->call($this->method.'.GoTo', [
             'playerid' => $player->id,
             'to' => $direction,
         ]);
@@ -104,7 +104,7 @@ class Player {
      */
     public function playPause(PlayerModel $player=null) {
     
-        $this->adapter->call($this->method.'.PlayPause', [
+        $this->kodi->adapter()->call($this->method.'.PlayPause', [
             'playerid' => is_null($player) ? 1 : $player->id,
         ]);
         
@@ -119,7 +119,7 @@ class Player {
      */
     public function stop(PlayerModel $player=null) {
         
-        $this->adapter->call($this->method.'.Stop', [
+        $this->kodi->adapter()->call($this->method.'.Stop', [
             'playerid' => is_null($player) ? 1 : $player->id,
         ]);
         
@@ -138,7 +138,7 @@ class Player {
         
         if ($player->type == 'audio') {
             
-            $response = $this->adapter->call($this->method.'.GetItem', [
+            $response = $this->kodi->adapter()->call($this->method.'.GetItem', [
                 'playerid' => 1,
                 'properties' => [
                     "title",
@@ -151,7 +151,7 @@ class Player {
             return new Song($response[0]->item);
         }
         
-        $response = $this->adapter->call($this->method.'.GetItem', [
+        $response = $this->kodi->adapter()->call($this->method.'.GetItem', [
             'playerid' => 1,
             'properties' => [
                 "title",
