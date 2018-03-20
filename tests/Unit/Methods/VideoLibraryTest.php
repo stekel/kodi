@@ -261,6 +261,22 @@ class VideoLibraryTest extends TestCase {
         ], $this->fakeKodi->getHistoryRequest(0));
     }
     
+    /** @test **/
+    public function can_update_video_library() {
+        
+        $kodi = $this->fakeKodi->createResponse('OK')->bind();
+        
+        $this->assertTrue($kodi->videoLibrary()->scan());
+        
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'VideoLibrary.Scan',
+            'params' => [
+                'showdialogs' => false
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+    }
+    
     /**
      * Create a fake episode
      *

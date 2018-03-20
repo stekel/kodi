@@ -162,12 +162,28 @@ class VideoLibrary {
     /**
      * Clean the video library
      *
-     * @return [type]
+     * @param  boolean $showDialogs
+     * @return string
      */
-    public function clean() {
+    public function clean($showDialogs = false) {
         
         $response = $this->adapter->call($this->method.'.Clean', [
-            'showdialogs' => false
+            'showdialogs' => $showDialogs
+        ]);
+        
+        return ($response == "OK") ? true : false;
+    }
+    
+    /**
+     * Scan for new video media
+     *
+     * @param  boolean $showDialogs
+     * @return string
+     */
+    public function scan($showDialogs = false) {
+        
+        $response = $this->adapter->call($this->method.'.Scan', [
+            'showdialogs' => $showDialogs
         ]);
         
         return ($response == "OK") ? true : false;
