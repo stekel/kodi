@@ -61,7 +61,7 @@ class Player extends Model {
      */
     public function next() {
     
-        $this->kodi->player()->goTo('next');
+        $this->kodi->player()->goTo($this, 'next');
     }
     
     /**
@@ -71,6 +71,6 @@ class Player extends Model {
      */
     public function previous() {
     
-        $this->kodi->player()->goTo('previous');
+        $this->kodi->player()->goTo($this, 'previous');
     }
 }
