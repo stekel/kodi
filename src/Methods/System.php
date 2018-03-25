@@ -38,14 +38,25 @@ class System {
      */
     public function getInfoLabels() {
         
-        $response = $this->kodi->adapter()->call($this->method.'.GetInfoLabels', [
-            'labels' => [
-                'System.BuildVersion',
-                'System.BuildDate',
-                'System.FriendlyName',
-                'Network.IPAddress',
-            ]
-        ]);
+        try {
+            
+            $response = $this->kodi->adapter()->call($this->method.'.GetInfoLabels', [
+                'labels' => [
+                    'System.BuildVersion',
+                    'System.BuildDate',
+                    'System.FriendlyName',
+                    'Network.IPAddress',
+                ]
+            ]);
+        } catch (\Exception $e) {
+            
+            return new SystemModel((object) [
+                'System.BuildVersion' => null,
+                'System.BuildDate' => null,
+                'System.FriendlyName' => null,
+                'Network.IPAddress' => null,
+            ]);
+        }
         
         return new SystemModel($response);
     }

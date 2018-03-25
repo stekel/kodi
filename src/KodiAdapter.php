@@ -3,6 +3,7 @@
 namespace stekel\Kodi;
 
 use GuzzleHttp\Client as GuzzleClient;
+use stekel\Kodi\Exceptions\KodiConnectionFailed;
 
 class KodiAdapter {
     
@@ -37,14 +38,20 @@ class KodiAdapter {
      */
     public function call($method, array $params=null) {
         
-        $response = $this->guzzleClient->post('jsonrpc', [
-            'json' => [
-                'jsonrpc' => $this->jsonrpc,
-                'method' => $method,
-                'id' => 1,
-                'params' => $params
-            ]
-        ]);
+        try {
+            
+            $response = $this->guzzleClient->post('jsonrpc', [
+                'json' => [
+                    'jsonrpc' => $this->jsonrpc,
+                    'method' => $method,
+                    'id' => 1,
+                    'params' => $params
+                ]
+            ]);
+        } catch (\Exception $e) {
+            
+            throw new KodiConnectionFailed();
+        }
         
         $contents = json_decode($response->getBody()->getContents());
         
