@@ -11,6 +11,7 @@ use stekel\Kodi\Methods\Application;
 use stekel\Kodi\Methods\Gui;
 use stekel\Kodi\Methods\Player;
 use stekel\Kodi\Methods\System;
+use stekel\Kodi\Methods\AudioLibrary;
 use stekel\Kodi\Methods\VideoLibrary;
 use stekel\Kodi\Tests\Helpers\FakeKodi;
 
@@ -90,6 +91,16 @@ class Kodi {
     public function player() {
         
         return new Player($this);
+    }
+    
+    /**
+     * Audio library functions
+     *
+     * @return AudioLibrary
+     */
+    public function audioLibrary() {
+    
+        return new AudioLibrary($this->adapter);
     }
     
     /**
