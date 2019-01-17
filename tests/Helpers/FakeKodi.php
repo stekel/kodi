@@ -3,14 +3,17 @@
 namespace stekel\Kodi\Tests\Helpers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use stekel\Kodi\Kodi;
 use stekel\Kodi\KodiAdapter;
 
-class FakeKodi {
+class FakeKodi
+{
     
     /**
      * Responses to send
@@ -32,8 +35,8 @@ class FakeKodi {
      * @param  mixed $result
      * @return FakeKodiAdapter
      */
-    public function createResponse($result) {
-    
+    public function createResponse($result)
+    {
         array_push($this->responses, new Response(200, [], json_encode([
             'id' => 1,
             'jsonrpc' => '2.0',
@@ -44,12 +47,25 @@ class FakeKodi {
     }
     
     /**
+     * Create exception
+     *
+     * @param  string $message
+     * @return FakeKodiAdapter
+     */
+    public function createException($message)
+    {
+        array_push($this->responses, new RequestException($message, new Request('GET', 'test')));
+        
+        return $this;
+    }
+    
+    /**
      * Bind responses to client
      *
      * @return void
      */
-    public function bind() {
-        
+    public function bind()
+    {
         $stack = HandlerStack::create(new MockHandler($this->responses));
         $stack->push(Middleware::history($this->history));
         
@@ -67,8 +83,8 @@ class FakeKodi {
      *
      * @return integer
      */
-    public function requestCount() {
-    
+    public function requestCount()
+    {
         return count($this->history);
     }
     
@@ -78,8 +94,8 @@ class FakeKodi {
      * @param  integer $key
      * @return Request
      */
-    public function getHistoryRequest($key) {
-        
+    public function getHistoryRequest($key)
+    {
         return $this->history[$key]['request'] ?? $this->history[$key]['request'];
     }
 }
