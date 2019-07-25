@@ -4,6 +4,7 @@ namespace stekel\Kodi\Tests\Unit\Methods;
 
 use stekel\Kodi\Models\Album;
 use stekel\Kodi\Models\Artist;
+use stekel\Kodi\Models\Song;
 use stekel\Kodi\Tests\TestCase;
 use stekel\Kodi\Tests\Helpers\Request;
 
@@ -50,7 +51,7 @@ class AudioLibraryTest extends TestCase {
     }
 
     /** @test **/
-    public function can_get_an_albums_by_an_artist() {
+    public function can_get_all_albums_by_an_artist() {
 
         $kodi = $this->fakeKodi->createResponse([
             'albums' => [
@@ -58,9 +59,9 @@ class AudioLibraryTest extends TestCase {
                 new Album((object) ['title' => 'AlbumB']),
             ],
             'limits' => (object) [
-                'end' => 3,
+                'end' => 2,
                 'start' => 0,
-                'total' => 3
+                'total' => 2
             ]
         ])->bind();
 
@@ -82,6 +83,41 @@ class AudioLibraryTest extends TestCase {
 
         $this->assertCount(2, $albums);
         $this->assertEquals(Album::class, get_class($albums->first()));
+    }
+
+    /** @test **/
+    public function can_get_all_songs_on_an_album() {
+
+        $kodi = $this->fakeKodi->createResponse([
+            'songs' => [
+                new Song((object) ['title' => 'SongA']),
+                new Song((object) ['title' => 'SongB']),
+            ],
+            'limits' => (object) [
+                'end' => 2,
+                'start' => 0,
+                'total' => 2
+            ]
+        ])->bind();
+
+        $songs = $kodi->audioLibrary()->getSongsByAlbum(new Album((object) [
+            'albumid' => 999
+        ]));
+
+        $this->assertEquals(1, $this->fakeKodi->requestCount());
+        $this->assertRequestBodyMatches([
+            'method' => 'Audio.Details.Song',
+            'params' => [
+                'filter' => [
+                    'field' => 'songid',
+                    'operator' => 'is',
+                    'value' => 999
+                ],
+            ]
+        ], $this->fakeKodi->getHistoryRequest(0));
+
+        $this->assertCount(2, $songs);
+        $this->assertEquals(Song::class, get_class($songs->first()));
     }
 
     /**

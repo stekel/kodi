@@ -2,9 +2,12 @@
 
 namespace stekel\Kodi\Methods;
 
+use Illuminate\Support\Collection;
+use stekel\Kodi\Exceptions\KodiConnectionFailed;
 use stekel\Kodi\KodiAdapter;
 use stekel\Kodi\Models\Album;
 use stekel\Kodi\Models\Artist;
+use stekel\Kodi\Models\Song;
 
 class AudioLibrary {
     
@@ -71,7 +74,7 @@ class AudioLibrary {
      *
      * @param Artist $artist
      * @return Collection
-     * @throws \stekel\Kodi\Exceptions\KodiConnectionFailed
+     * @throws KodiConnectionFailed
      */
     public function getAlbumsByArtist(Artist $artist) {
 
@@ -91,6 +94,34 @@ class AudioLibrary {
         return collect($response->albums)->transform(function($album) {
 
             return new Album($album);
+        });
+    }
+
+    /**
+     * Get all songs on an album
+     *
+     * @param Album $album
+     * @return Collection
+     * @throws KodiConnectionFailed
+     */
+    public function getSongsByAlbum(Album $album) {
+
+        $response = $this->adapter->call('Audio.Details.Song', [
+            'filter' => [
+                'field' => 'songid',
+                'operator' => 'is',
+                'value' => $album->id,
+            ],
+        ]);
+
+        if (!isset($response->songs) || empty($response->songs)) {
+
+            return collect([]);
+        }
+
+        return collect($response->songs)->transform(function($song) {
+
+            return new Song($song);
         });
     }
 }
