@@ -7,6 +7,7 @@ use stekel\Kodi\Methods\Addons;
 use stekel\Kodi\Methods\AudioLibrary;
 use stekel\Kodi\Methods\Gui;
 use stekel\Kodi\Methods\Player;
+use stekel\Kodi\Methods\Playlist;
 use stekel\Kodi\Methods\System;
 use stekel\Kodi\Methods\VideoLibrary;
 use stekel\Kodi\Tests\Helpers\FakeKodi;
@@ -99,7 +100,17 @@ class Kodi
     {
         return new AudioLibrary($this->adapter);
     }
-    
+
+    /**
+     * Playlist functions
+     *
+     * @return Playlist
+     */
+    public function playlist()
+    {
+        return new Playlist($this->adapter);
+    }
+
     /**
      * Video library functions
      *
