@@ -51,10 +51,15 @@ class KodiServiceProvider extends ServiceProvider
             
             return new KodiAdapter(app('kodi.client'));
         });
-        
+
+        $this->app->bind(MethodFactory::class, function($app) {
+
+            return new MethodFactory(app(KodiAdapter::class));
+        });
+
         $this->app->bind(Kodi::class, function($app) {
             
-            return new Kodi(app(KodiAdapter::class));
+            return new Kodi(app(KodiAdapter::class), app(MethodFactory::class));
         });
     }
     

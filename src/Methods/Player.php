@@ -2,7 +2,10 @@
 
 namespace stekel\Kodi\Methods;
 
-use stekel\Kodi\Kodi;
+use Illuminate\Support\Collection;
+use stekel\Kodi\Exceptions\KodiConnectionFailed;
+use stekel\Kodi\KodiAdapter;
+use stekel\Kodi\KodiFacade;
 use stekel\Kodi\Models\Player as PlayerModel;
 use stekel\Kodi\Models\Episode;
 use stekel\Kodi\Models\Song;
@@ -10,11 +13,11 @@ use stekel\Kodi\Models\Song;
 class Player {
     
     /**
-     * Kodi
+     * KodiAdapter
      *
-     * @var Kodi
+     * @var KodiAdapter
      */
-    protected $kodi;
+    protected $adapter;
     
     /**
      * Method
@@ -22,50 +25,55 @@ class Player {
      * @var string
      */
     protected $method = 'Player';
-    
+
     /**
      * Construct
+     *
+     * @param KodiAdapter $adapter
      */
-    public function __construct(Kodi $kodi) {
+    public function __construct(KodiAdapter $adapter) {
         
-        $this->kodi = $kodi;
+        $this->adapter = $adapter;
     }
-    
+
     /**
      * Get active players
      *
      * @return Collection
+     * @throws KodiConnectionFailed
      */
     public function getActivePlayers() {
     
-        return collect($this->kodi->adapter()->call($this->method.'.GetActivePlayers', []))->transform(function($item) {
+        return collect($this->adapter->call($this->method.'.GetActivePlayers', []))->transform(function($item) {
             
-            return new PlayerModel((object) $item, $this->kodi);
+            return new PlayerModel((object) $item, KodiFacade::getFacadeRoot());
         });
     }
-    
+
     /**
      * Get players
      *
      * @return Collection
+     * @throws KodiConnectionFailed
      */
     public function getPlayers() {
     
-        return collect($this->kodi->adapter()->call($this->method.'.GetPlayers', []))->transform(function($item) {
+        return collect($this->adapter->call($this->method.'.GetPlayers', []))->transform(function($item) {
             
-            return new PlayerModel((object) $item, $this->kodi);
+            return new PlayerModel((object) $item, KodiFacade::getFacadeRoot());
         });
     }
-    
+
     /**
      * Open
      *
-     * @param  mixed   $model
+     * @param mixed $model
      * @return boolean
+     * @throws KodiConnectionFailed
      */
     public function open($model) {
     
-        $this->kodi->adapter()->call($this->method.'.Open', [
+        $this->adapter->call($this->method.'.Open', [
             'item' => [
                 $model->getParameter('id') => $model->id,
             ],
@@ -73,13 +81,14 @@ class Player {
         
         return true;
     }
-    
+
     /**
      * Go to (previous/next)
      *
-     * @param  PlayerModel  $player
-     * @param  string  $direction
+     * @param PlayerModel $player
+     * @param string $direction
      * @return boolean
+     * @throws KodiConnectionFailed
      */
     public function goTo(PlayerModel $player, $direction) {
         
@@ -88,49 +97,52 @@ class Player {
             return false;
         }
         
-        $this->kodi->adapter()->call($this->method.'.GoTo', [
+        $this->adapter->call($this->method.'.GoTo', [
             'playerid' => $player->id,
             'to' => $direction,
         ]);
         
         return true;
     }
-    
+
     /**
      * Play/Pause
      *
-     * @param  PlayerModel $player
+     * @param PlayerModel $player
      * @return boolean
+     * @throws KodiConnectionFailed
      */
     public function playPause(PlayerModel $player=null) {
     
-        $this->kodi->adapter()->call($this->method.'.PlayPause', [
+        $this->adapter->call($this->method.'.PlayPause', [
             'playerid' => is_null($player) ? 1 : $player->id,
         ]);
         
         return true;
     }
-    
+
     /**
      * Stop
      *
-     * @param  PlayerModel $player
+     * @param PlayerModel $player
      * @return boolean
+     * @throws KodiConnectionFailed
      */
     public function stop(PlayerModel $player=null) {
         
-        $this->kodi->adapter()->call($this->method.'.Stop', [
+        $this->adapter->call($this->method.'.Stop', [
             'playerid' => is_null($player) ? 1 : $player->id,
         ]);
         
         return true;
     }
-    
+
     /**
      * Get the currently playing item
      *
-     * @param  PlayerModel $player
-     * @return array
+     * @param PlayerModel $player
+     * @return Episode|Song
+     * @throws KodiConnectionFailed
      */
     public function getItem(PlayerModel $player=null) {
         
@@ -138,7 +150,7 @@ class Player {
         
         if ($player->type == 'audio') {
             
-            $response = $this->kodi->adapter()->call($this->method.'.GetItem', [
+            $response = $this->adapter->call($this->method.'.GetItem', [
                 'playerid' => 1,
                 'properties' => [
                     "title",
@@ -151,7 +163,7 @@ class Player {
             return new Song($response[0]->item);
         }
         
-        $response = $this->kodi->adapter()->call($this->method.'.GetItem', [
+        $response = $this->adapter->call($this->method.'.GetItem', [
             'playerid' => 1,
             'properties' => [
                 "title",

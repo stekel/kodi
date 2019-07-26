@@ -34,7 +34,7 @@ class Model {
      * @var array
      */
     protected $attributeAliases = [];
-    
+
     /**
      * Construct
      *
@@ -44,10 +44,10 @@ class Model {
     public function __construct(\stdClass $parameters, Kodi $kodi=null) {
         
         $this->parameters = array_merge($this->parameters, (array) $parameters);
-        
+
         $this->kodi = $kodi;
     }
-    
+
     /**
      * Get the given parameter
      *

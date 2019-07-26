@@ -11,6 +11,8 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use stekel\Kodi\Kodi;
 use stekel\Kodi\KodiAdapter;
+use stekel\Kodi\KodiFacade;
+use stekel\Kodi\MethodFactory;
 
 class FakeKodi
 {
@@ -33,7 +35,7 @@ class FakeKodi
      * Create response
      *
      * @param  mixed $result
-     * @return FakeKodiAdapter
+     * @return FakeKodi
      */
     public function createResponse($result)
     {
@@ -50,7 +52,7 @@ class FakeKodi
      * Create exception
      *
      * @param  string $message
-     * @return FakeKodiAdapter
+     * @return FakeKodi
      */
     public function createException($message)
     {
@@ -62,20 +64,24 @@ class FakeKodi
     /**
      * Bind responses to client
      *
-     * @return void
+     * @return Kodi
      */
     public function bind()
     {
         $stack = HandlerStack::create(new MockHandler($this->responses));
         $stack->push(Middleware::history($this->history));
-        
-        return new Kodi(
-            new KodiAdapter(
-                new Client([
-                    'handler' => $stack
-                ])
-            )
+
+        $kodiAdapter = new KodiAdapter(
+            new Client([
+                'handler' => $stack
+            ])
         );
+
+        $kodi = new Kodi($kodiAdapter, new MethodFactory($kodiAdapter));
+
+        KodiFacade::swap($kodi);
+
+        return $kodi;
     }
     
     /**

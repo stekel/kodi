@@ -20,7 +20,7 @@ class SystemTest extends TestCase {
             'System.FriendlyName' => 'Kodi Living Room',
             'Network.IPAddress' => '192.168.1.100',
         ])->bind();
-        
+
         $system = $kodi->system()->getInfoLabels();
         
         $this->assertEquals(1, $this->fakeKodi->requestCount());

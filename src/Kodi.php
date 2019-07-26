@@ -14,20 +14,27 @@ use stekel\Kodi\Tests\Helpers\FakeKodi;
 
 class Kodi
 {
-    
     /**
      * Kodi adapter
      *
      * @var KodiAdapter
      */
     protected $adapter;
-    
+
+    /**
+     * Method factory
+     *
+     * @var MethodFactory
+     */
+    protected $methodFactory;
+
     /**
      * Construct
      */
-    public function __construct(KodiAdapter $adapter)
+    public function __construct(KodiAdapter $adapter, MethodFactory $methodFactory)
     {
         $this->adapter = $adapter;
+        $this->methodFactory = $methodFactory;
     }
     
     /**
@@ -41,14 +48,14 @@ class Kodi
      */
     public static function connect($host='127.0.0.1', $port='8080', $username='xbmc', $password='xbmc')
     {
-        return new Kodi(
-            new KodiAdapter(
-                new GuzzleClient([
-                    'base_uri' => 'http://'.$host.':'.$port.'/',
-                    'timeout'  => 2.0,
-                ])
-            )
+        $kodiAdapter = new KodiAdapter(
+            new GuzzleClient([
+                'base_uri' => 'http://'.$host.':'.$port.'/',
+                'timeout'  => 2.0,
+            ])
         );
+
+        return new Kodi($kodiAdapter, new MethodFactory($kodiAdapter));
     }
     
     /**
@@ -70,74 +77,17 @@ class Kodi
     {
         return new FakeKodi();
     }
-    
-    /**
-     * Add-on functions
-     *
-     * @return Addons
-     */
-    public function addons()
-    {
-        return new Addons($this->adapter);
-    }
-    
-    /**
-     * Player functions
-     *
-     * @return Player
-     */
-    public function player()
-    {
-        return new Player($this);
-    }
-    
-    /**
-     * Audio library functions
-     *
-     * @return AudioLibrary
-     */
-    public function audioLibrary()
-    {
-        return new AudioLibrary($this->adapter);
-    }
 
     /**
-     * Playlist functions
-     *
-     * @return Playlist
+     * Handle missing function calls
+     * 
+     * @param $method
+     * @param $parameters
+     * @return mixed
+     * @throws Exceptions\KodiMethodClassNotFound
      */
-    public function playlist()
-    {
-        return new Playlist($this->adapter);
-    }
+    public function __call($method, $parameters) {
 
-    /**
-     * Video library functions
-     *
-     * @return VideoLibrary
-     */
-    public function videoLibrary()
-    {
-        return new VideoLibrary($this->adapter);
-    }
-    
-    /**
-     * Gui functions
-     *
-     * @return Gui
-     */
-    public function gui()
-    {
-        return new Gui($this->adapter);
-    }
-    
-    /**
-     * System functions
-     *
-     * @return System
-     */
-    public function system()
-    {
-        return new System($this);
+        return $this->methodFactory->fromMethodSlug($method);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace stekel\Kodi\Tests\Unit;
 
+use stekel\Kodi\Exceptions\KodiMethodClassNotFound;
 use stekel\Kodi\Kodi;
+use stekel\Kodi\Methods\Playlist;
 use stekel\Kodi\Tests\Helpers\FakeKodi;
 use stekel\Kodi\Tests\TestCase;
 use stekel\Kodi\Exceptions\KodiConnectionFailed;
@@ -33,5 +35,19 @@ class KodiTest extends TestCase
         $this->expectException(KodiConnectionFailed::class);
         
         $kodi->player()->playPause();
+    }
+
+    /** @test * */
+    public function can_return_a_valid_method_class()
+    {
+        $this->assertInstanceOf(Playlist::class, Kodi::fake()->bind()->playlist());
+    }
+
+    /** @test * */
+    public function can_throw_an_exception_if_the_method_class_does_not_exist()
+    {
+        $this->expectException(KodiMethodClassNotFound::class);
+
+        Kodi::fake()->bind()->unknownMethodCall();
     }
 }
